@@ -1,0 +1,9 @@
+package com.board.demo.service;
+
+import com.board.demo.domain.Board;
+import java.util.List;
+
+public interface BoardService {
+    List<Board> findAllBoards();
+    Board saveBoard(Board board);
+}
