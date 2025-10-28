@@ -1,10 +1,53 @@
 .custom-table {
-  background: #fffdfa;
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  thead.table-dark {
+    background-color: #2c3e50 !important;
+    color: #ecf0f1 !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+    th {
+      border: none !important;
+      padding: 1rem 1.2rem;
+    }
+  }
+
+  tbody tr {
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #e8f0fe;
+    }
+
+    td {
+      vertical-align: middle;
+      font-size: 1rem;
+      padding: 0.9rem 1.2rem;
+      border-top: none !important;
+    }
+  }
 }
+
+.btn-link {
+  color: #007bff !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0;
+  text-decoration: none;
+
+  &:hover {
+    color: #0056b3 !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
 .table-title {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #315fae;
+  font-size: 1.8rem;
+  color: #34495e;
+  font-weight: 700;
+  letter-spacing: 0.05rem;
 }

@@ -1,11 +1,13 @@
 import React from "react";
+import MainLayout from "./board/MainLayout";
 import BoardList from "./board/BosrdList";
+
 
 function App() {
   return (
-    <div className="App">
+    <MainLayout>
       <BoardList />
-    </div>
+    </ MainLayout>
   );
 }
 
