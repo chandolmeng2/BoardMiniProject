@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.board.service.BoardServiceImpl;
+import com.example.board.service.BoardService;
 
 @SpringBootTest
 class BoardSpringApplicationTests {
 
 	@Autowired
-    private BoardServiceImpl boardService;
+    private BoardService boardService;
 
     @Test
     public void testCreateBoards() {

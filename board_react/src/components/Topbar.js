@@ -10,10 +10,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const drawerWidth = 240;
 
-function Topbar() {
+function Topbar({ onMenuClick }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -28,16 +29,14 @@ function Topbar() {
       elevation={scrolled ? 8 : 0}
       sx={{
         borderRadius: "30px",
-        background: scrolled
-          ? "#f4f6fa"
-          : "#f4f6fa",
+        background: scrolled ? "#212529" : "#f4f6fa",
         backdropFilter: scrolled ? "blur(8px)" : "none",
-        color: "#23284b",
+        color: scrolled ? "#f4f6fa" : "#23284b",
         boxShadow: scrolled ? "0 4px 16px rgba(44,62,80,.16)" : "none",
         left: 0,
         top: 0,
-        ml: `${drawerWidth}px`,
-        width: `calc(99% - ${drawerWidth}px)`,
+        ml: { xs: 0, lg: `${drawerWidth}px` }, 
+        width: { xs: "99%", lg: `calc(99% - ${drawerWidth}px)` }, 
         zIndex: 1201,
         transition: "all 0.3s cubic-bezier(.4,.2,.6,1)",
       }}
@@ -64,6 +63,15 @@ function Topbar() {
             inputProps={{ "aria-label": "search" }}
           />
         </Box>
+        <IconButton
+          color="inherit"
+          edge="start"
+          aria-label="menu"
+          sx={{ display: { lg: "none" } }}
+          onClick={onMenuClick}
+        >
+          <MenuIcon />
+        </IconButton>
         <IconButton color="inherit">
           <NotificationsIcon />
         </IconButton>
