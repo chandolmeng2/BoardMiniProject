@@ -6,20 +6,26 @@ import { Link } from "react-router-dom";
 import { FaArrowUp } from "react-icons/fa"; // 아이콘 라이브러리 (선택 사항)
 
 function BoardList() {
-  const [boards, setBoards] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [showScroll, setShowScroll] = useState(false);
 
   const postsPerPage = 20;
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = boards.slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil(boards.length / postsPerPage);
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(posts.length / postsPerPage);
 
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   useEffect(() => {
-    axios.get("/api/posts").then((res) => setBoards(res.data));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
+  useEffect(() => {
+    axios.get("/api/boards").then((res) => setPosts(res.data));
   }, []);
 
   useEffect(() => {
@@ -34,7 +40,7 @@ function BoardList() {
     <div id="BoardList" className="container mt-8">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1 className="table-title m-0">게시글 리스트</h1>
-        <Link to="/posts/new" className="btn btn-primary">
+        <Link to="/boards/new" className="btn btn-primary">
           글 작성
         </Link>
       </div>
@@ -54,19 +60,19 @@ function BoardList() {
               </td>
             </tr>
           ) : (
-            currentPosts.map((board) => (
-              <tr key={board.id}>
-                <td>{board.id}</td>
+            currentPosts.map((post, idx) => (
+              <tr key={post.id}>
+                <td>{(currentPage - 1) * postsPerPage + idx + 1}</td>
                 <td>
                   <Link
-                    to={`/posts/${board.id}`}
+                    to={`/boards/${post.id}`}
                     className="btn btn-link fw-bold text-primary"
                     style={{ padding: 0, textDecoration: "underline" }}
                   >
-                    {board.title}
+                    {post.title}
                   </Link>
                 </td>
-                <td>{board.createdAt?.slice(0, 10)}</td>
+                <td>{post.createdAt?.slice(0, 10)}</td>
               </tr>
             ))
           )}

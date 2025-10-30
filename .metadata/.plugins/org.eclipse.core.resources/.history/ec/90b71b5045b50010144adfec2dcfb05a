@@ -1,0 +1,39 @@
+package com.example.board.comment.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.board.comment.domain.Comment;
+import com.example.board.comment.repository.CommentRepository;
+import com.example.board.post.domain.Post;
+import com.example.board.post.repository.PostRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class CommentService {
+
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
+
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+    }
+
+    public List<Comment> getCommentsByBoardId(Long boardId) {
+        return commentRepository.findByBoardIdOrderByCreatedAtAsc(boardId);
+    }
+
+    public Comment createComment(Long boardId, String content) {
+        Post board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        Comment comment = new Comment();
+        comment.setBoard(board);
+        comment.setContent(content);
+        comment.setCreatedAt(LocalDateTime.now());
+        return commentRepository.save(comment);
+    }
+
+    // 필요에 따라 댓글 수정, 삭제 등도 추가
+}

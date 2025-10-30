@@ -1,0 +1,46 @@
+package com.example.board.comment.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.board.comment.domain.Comment;
+import com.example.board.comment.service.CommentService;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/boards/{postId}/comments")
+@CrossOrigin(origins = "http://localhost:3000")
+public class CommentController {
+
+	private final CommentService commentService;
+
+	public CommentController(CommentService commentService) {
+		this.commentService = commentService;
+	}
+
+	@GetMapping
+	public List<Comment> getComments(@PathVariable("postId") Long postId) {
+		return commentService.getCommentsByPostId(postId);
+	}
+
+	@PostMapping
+	public Comment createComment(@PathVariable("postId") Long postId, @RequestBody Comment comment) {
+		return commentService.createComment(postId, comment.getContent());
+	}
+
+	@DeleteMapping("/{commentId}")
+	public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId) {
+		commentService.deleteComment(commentId);
+		return ResponseEntity.noContent().build(); // 204 No Content 반환
+	}
+
+	@PutMapping("/{commentId}")
+	public ResponseEntity<Void> updateComment(@PathVariable("commentId") Long commentId,
+			@RequestBody Map<String, String> requestBody) {
+		String content = requestBody.get("content");
+		commentService.updateComment(commentId, content);
+		return ResponseEntity.ok().build();
+	}
+}

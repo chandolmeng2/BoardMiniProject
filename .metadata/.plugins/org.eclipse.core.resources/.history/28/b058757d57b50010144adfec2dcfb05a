@@ -1,0 +1,90 @@
+package com.example.board.post.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.board.post.domain.Post;
+import com.example.board.post.repository.PostRepository;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Service
+public class PostService {
+	private final PostRepository postRepository;
+
+	public List<Post> findAllPosts() {
+		return postRepository.findAll();
+	}
+
+	public Post savePost(Post post) {
+		return postRepository.save(post);
+	}
+
+	public Optional<Post> getPostById(Long id) {
+		return postRepository.findById(id);
+	}
+
+	public Post createPost(Post post) {
+		post.setCreatedAt(LocalDateTime.now());
+		return postRepository.save(post);
+	}
+
+	public Optional<Post> updatePost(Long id, Post updatedPost) {
+		return postRepository.findById(id).map(post -> {
+			post.setTitle(updatedPost.getTitle());
+			post.setContent(updatedPost.getContent());
+			post.setUpdatedAt(LocalDateTime.now());
+			return postRepository.save(post);
+		});
+	}
+
+	public boolean deletePost(Long id) {
+		return postRepository.findById(id).map(post -> {
+			postRepository.delete(post);
+			return true;
+		}).orElse(false);
+	}
+
+	public Post toggleLike(Long postId) {
+		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+		boolean liked = false; // 실제 유저 좋아요 상태 체크 논리 필요
+		// 여기선 간단히 좋아요 토글 상태 시뮬레이션 예
+		if (liked) {
+			post.setLikeCount(post.getLikeCount() - 1);
+			liked = false;
+		} else {
+			post.setLikeCount(post.getLikeCount() + 1);
+			if (post.getDislikeCount() > 0) {
+				post.setDislikeCount(post.getDislikeCount() - 1);
+			}
+			liked = true;
+		}
+		// 실제 좋아요, 싫어요 상태를 사용자별로 관리해야 함
+
+		return postRepository.save(post);
+	}
+
+	public Post toggleDislike(Long postId) {
+		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글을 찾을 수 없습니다."));
+
+		boolean disliked = false; // 실제 유저 싫어요 상태 체크 논리 필요
+		if (disliked) {
+			post.setDislikeCount(post.getDislikeCount() - 1);
+			disliked = false;
+		} else {
+			post.setDislikeCount(post.getDislikeCount() + 1);
+			if (post.getLikeCount() > 0) {
+				post.setLikeCount(post.getLikeCount() - 1);
+			}
+			disliked = true;
+		}
+		// 실제 좋아요, 싫어요 상태를 사용자별로 관리해야 함
+
+		return postRepository.save(post);
+	}
+}

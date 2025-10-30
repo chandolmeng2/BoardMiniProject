@@ -1,0 +1,31 @@
+package com.example.comment;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.example.comment.service.CommentService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/posts/{boardId}/comments")
+@CrossOrigin(origins = "http://localhost:3000")
+public class CommentController {
+
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
+
+    @GetMapping
+    public List<Comment> getComments(@PathVariable("boardid") Long boardId) {
+        return commentService.getCommentsByBoardId(boardId);
+    }
+
+    @PostMapping
+    public Comment createComment(@PathVariable("boardid") Long boardId, @RequestBody Comment comment) {
+        return commentService.createComment(boardId, comment.getContent());
+    }
+
+    // 필요에 따라 댓글 수정, 삭제 등도 추가
+}

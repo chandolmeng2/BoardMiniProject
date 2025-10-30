@@ -1,3 +1,24 @@
 1761603374229	Delete element
 1761713335580	Delete element
 1761713348073	Rename compilation unit 'BoardServiceImpl.java'
+1761790796599	Rename package 'com.example.commetn'
+1761790805826	Rename package 'com.example.comment'
+1761790810154	Move compilation unit
+1761790824197	Move compilation unit
+1761790834445	Rename package 'com.example.comment.domain'
+1761791832584	Delete element
+1761791838515	Delete element
+1761794241044	Rename package 'com.example.comment'
+1761794247625	Rename package 'com.example.comment.controller'
+1761794253501	Rename package 'com.example.comment.repository'
+1761794263108	Rename package 'com.example.comment.service'
+1761796377728	Rename package 'com.example.board.controller'
+1761796388475	Rename package 'com.example.board.domain'
+1761796403163	Rename package 'com.example.board.comment'
+1761796413844	Rename package 'com.example.board.repository'
+1761796426192	Rename package 'com.example.board.service'
+1761796464343	Rename type 'Board'
+1761796481145	Rename type 'BoardController'
+1761796489750	Rename type 'BoardRepository'
+1761796495257	Rename type 'BoardService'
+1761804923654	Delete element

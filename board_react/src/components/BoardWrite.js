@@ -11,8 +11,8 @@ function BoardWrite() {
     e.preventDefault();
 
     try {
-      await axios.post("/api/posts", { title, content });
-      navigate("/"); // 작성 완료 후 글 목록 페이지로 이동
+      await axios.post("/api/boards", { title, content });
+      navigate("/boards"); // 작성 완료 후 글 목록 페이지로 이동
     } catch (error) {
       alert("글 작성 중 오류가 발생했습니다.");
       console.error(error);

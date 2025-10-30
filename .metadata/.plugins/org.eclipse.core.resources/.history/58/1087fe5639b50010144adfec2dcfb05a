@@ -1,0 +1,10 @@
+package com.example.board.dto;
+
+public class BoardDTO {
+    private Long id;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+    private List<CommentDTO> comments;
+    // getters, setters
+}

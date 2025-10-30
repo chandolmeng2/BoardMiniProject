@@ -1,0 +1,55 @@
+package com.example.board.post.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.board.post.domain.Post;
+import com.example.board.post.repository.PostRepository;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Service
+public class PostService {
+	private final PostRepository postRepository;
+
+	public List<Post> findAllPosts() {
+		return postRepository.findAll();
+	}
+
+	public Post savePost(Post post) {
+		return postRepository.save(post);
+	}
+
+	public Optional<Post> getPostById(Long id) {
+		return postRepository.findById(id);
+	}
+
+	public Post createBoard(Post post) {
+		post.setCreatedAt(LocalDateTime.now());
+		return postRepository.save(post);
+	}
+
+	public Optional<Post> updateBoard(Long id, Post updatedPost) {
+		return postRepository.findById(id).map(post -> {
+			post.setTitle(updatedPost.getTitle());
+			post.setContent(updatedPost.getContent());
+			return postRepository.save(post);
+		});
+	}
+
+	public boolean deleteBoard(Long id) {
+		return postRepository.findById(id).map(board -> {
+			postRepository.delete(board);
+			return true;
+		}).orElse(false);
+	}
+
+	public void createBoard(String title, String content) {
+		// TODO Auto-generated method stub
+
+	}
+}

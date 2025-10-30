@@ -1,0 +1,49 @@
+package com.example.board.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.board.domain.Board;
+import com.example.board.repository.BoardRepository;
+
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Service
+public class BoardService {
+	private final BoardRepository boardRepository;
+
+	public List<Board> findAllBoards() {
+		return boardRepository.findAll();
+	}
+
+	public Board saveBoard(Board board) {
+		return boardRepository.save(board);
+	}
+
+	public Optional<Board> getBoardById(Long id) {
+		return boardRepository.findById(id);
+	}
+
+	public Board createBoard(Board board) {
+	    board.setCreatedAt(LocalDateTime.now());
+	    return boardRepository.save(board);
+	}
+	
+	public Optional<Board> updateBoard(Long id, Board updatedBoard) {
+	    return boardRepository.findById(id).map(board -> {
+	        board.setTitle(updatedBoard.getTitle());
+	        board.setContent(updatedBoard.getContent());
+	        return boardRepository.save(board);
+	    });
+	}
+
+
+	public void createBoard(String title, String content) {
+		// TODO Auto-generated method stub
+		
+	}
+}
