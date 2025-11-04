@@ -1,0 +1,36 @@
+package com.example.board.like.controller;
+
+import com.example.board.user.domain.User;
+import com.example.board.like.service.LikeService;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/posts")
+@RequiredArgsConstructor
+public class LikeController {
+
+    private final LikeService likeService;
+
+    @PostMapping("/{postId}/likes")
+    public ResponseEntity<?> like(@PathVariable Long postId, @AuthenticationPrincipal User user) {
+        if (user == null) {
+            System.out.println("user is null! 인증 실패 또는 토큰 미전달");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthenticated");
+        }
+        System.out.println("Authenticated user id: " + user.getId());
+
+        likeService.toggleLike(postId, user, true);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/{postId}/dislike")
+    public void dislike(@PathVariable("postId") Long postId, @AuthenticationPrincipal User user) {
+        likeService.toggleLike(postId, user, false);
+    }
+}

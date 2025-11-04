@@ -1,4 +1,4 @@
-package com.example.board.user.domain;
+	package com.example.board.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ public class User {
 	private String username;
 
 	@Column(nullable = false)
-	private String password; // 보안을 위해 암호화 필요
+	private String password;
 
 	@Column(unique = true, nullable = false)
 	private String email;

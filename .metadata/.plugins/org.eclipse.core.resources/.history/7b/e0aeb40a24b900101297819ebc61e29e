@@ -1,0 +1,87 @@
+package com.example.board.like.service;
+
+import com.example.board.like.Like;
+import com.example.board.like.repository.LikeRepository;
+import com.example.board.post.domain.Post;
+import com.example.board.post.repository.PostRepository;
+import com.example.board.user.domain.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class LikeService {
+
+	private final LikeRepository likeRepository;
+	private final PostRepository postRepository;
+
+	public void toggleLike(Long postId, User user, boolean isLike) {
+	    if (isLike) {
+	        if (isPostLikedByUser(postId, user)) {
+	            cancelLike(postId, user);
+	        } else {
+	            if (isPostDislikedByUser(postId, user)) {
+	                cancelDislike(postId, user);
+	            }
+	            addLike(postId, user);
+	        }
+	    } else {
+	        if (isPostDislikedByUser(postId, user)) {
+	            cancelDislike(postId, user);
+	        } else {
+	            if (isPostLikedByUser(postId, user)) {
+	                cancelLike(postId, user);
+	            }
+	            addDislike(postId, user);
+	        }
+	    }
+	}
+
+	public void addLike(Long postId, User user) {
+	    // 중복 체크는 toggleLike 내에서 했다고 가정
+	    Like like = new Like();
+	    like.setPost(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found")));
+	    like.setUser(user);
+	    like.setLiked(true);  // 좋아요 상태
+	    likeRepository.save(like);
+	}
+
+	public void addDislike(Long postId, User user) {
+	    Like dislike = new Like();
+	    dislike.setPost(postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found")));
+	    dislike.setUser(user);
+	    dislike.setLiked(false);  // 싫어요 상태
+	    likeRepository.save(dislike);
+	}
+
+
+	public boolean isPostLikedByUser(Long postId, User user) {
+	    return likeRepository.existsByPostIdAndUserAndLiked(postId, user, true);
+	}
+
+	public boolean isPostDislikedByUser(Long postId, User user) {
+	    return likeRepository.existsByPostIdAndUserAndLiked(postId, user, false);
+	}
+
+	
+	public int getLikeCountByPostId(Long postId) {
+		return likeRepository.countByPostIdAndLikedTrue(postId);
+	}
+
+	public int getDislikeCountByPostId(Long postId) {
+		return likeRepository.countByPostIdAndLikedFalse(postId);
+	}
+
+	public void cancelLike(Long postId, User user) {
+		Like like = likeRepository.findByPostIdAndUser(postId, user)
+				.orElseThrow(() -> new RuntimeException("Like not found"));
+		likeRepository.delete(like);
+	}
+
+	public void cancelDislike(Long postId, User user) {
+		Like like = likeRepository.findByPostIdAndUser(postId, user)
+				.orElseThrow(() -> new RuntimeException("Like not found"));
+		likeRepository.delete(like);		
+	}
+
+}

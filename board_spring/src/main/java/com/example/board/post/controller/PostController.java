@@ -2,11 +2,15 @@ package com.example.board.post.controller;
 
 import com.example.board.post.domain.Post;
 import com.example.board.post.service.PostService;
+import com.example.board.user.domain.User;
+import com.example.board.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,7 @@ import java.util.List;
 public class PostController {
 
 	private final PostService postService;
+	private final UserService userService;
 
 	@GetMapping
 	public List<Post> getAllPosts() {
@@ -37,7 +42,9 @@ public class PostController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Post> createPost(@RequestBody Post post) {
+	public ResponseEntity<Post> createPost(@RequestBody Post post, @AuthenticationPrincipal UserDetails userDetails) {
+		User user = userService.findByUsername(userDetails.getUsername());
+		post.setAuthor(user);
 		Post created = postService.createPost(post);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}

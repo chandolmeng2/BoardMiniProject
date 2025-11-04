@@ -6,6 +6,7 @@ import com.example.board.comment.domain.Comment;
 import com.example.board.comment.repository.CommentRepository;
 import com.example.board.post.domain.Post;
 import com.example.board.post.repository.PostRepository;
+import com.example.board.user.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,12 +27,15 @@ public class CommentService {
 		return commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
 	}
 
-	public Comment createComment(Long postId, String content) {
+	public Comment createComment(Long postId, String content, User user) {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+
 		Comment comment = new Comment();
 		comment.setPost(post);
 		comment.setContent(content);
+		comment.setAuthor(user); // 작성자 정보 설정 추가
 		comment.setCreatedAt(LocalDateTime.now());
+
 		return commentRepository.save(comment);
 	}
 

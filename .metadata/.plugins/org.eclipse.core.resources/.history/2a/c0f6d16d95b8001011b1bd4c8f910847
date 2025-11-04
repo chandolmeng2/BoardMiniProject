@@ -1,0 +1,29 @@
+package com.example.board.like.controller;
+
+import com.example.board.user.domain.User;
+import com.example.board.like.service.LikeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/posts")
+@RequiredArgsConstructor
+public class LikeController {
+
+    private final LikeService likeService;
+
+    @PostMapping("/{postId}/like")
+    public void like(@PathVariable("postId") Long postId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+        likeService.toggleLike(postId, user, true);
+    }
+
+
+    @PostMapping("/{postId}/dislike")
+    public void dislike(@PathVariable("postId") Long postId, @AuthenticationPrincipal User user) {
+        likeService.toggleLike(postId, user, false);
+    }
+}

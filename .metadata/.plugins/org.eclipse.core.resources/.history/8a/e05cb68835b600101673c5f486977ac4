@@ -1,0 +1,34 @@
+package com.example.board.user.controller;
+
+import com.example.board.user.domain.User;
+import com.example.board.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    // 회원 가입
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        User savedUser = userService.registerUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody User user) {
+        try {
+            userService.authenticate(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok("로그인 성공");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        }
+    }
+}

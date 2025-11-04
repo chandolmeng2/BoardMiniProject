@@ -1,0 +1,47 @@
+package com.example.board.like.service;
+
+import com.example.board.like.Like;
+import com.example.board.like.repository.LikeRepository;
+import com.example.board.post.domain.Post;
+import com.example.board.post.repository.PostRepository;
+import com.example.board.user.domain.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class LikeService {
+
+	private final LikeRepository likeRepository;
+	private final PostRepository postRepository;
+
+	public void toggleLike(Long postId, User user, boolean liked) {
+		Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+		Optional<Like> existingOpt = likeRepository.findByPostIdAndUserId(postId, user.getId());
+
+		if (existingOpt.isPresent()) {
+			Like existing = existingOpt.get();
+			if (existing.isLiked() == liked) {
+				likeRepository.delete(existing); // 같은 상태면 취소
+			} else {
+				existing.setLiked(liked);
+				likeRepository.save(existing);
+			}
+		} else {
+			Like like = Like.builder().post(post).user(user).liked(liked).build();
+			likeRepository.save(like);
+		}
+	}
+
+	public int getLikeCountByPostId(Long postId) {
+		return likeRepository.countByPostIdAndIsLikeTrue(postId);
+	}
+
+	// 특정 게시글에 대한 싫어요 수 조회
+	public int getDislikeCountByPostId(Long postId) {
+		return likeRepository.countByPostIdAndIsLikeFalse(postId);
+	}
+
+	// 좋아요, 싫어요 수 조회 메서드 등 추가 가능
+}

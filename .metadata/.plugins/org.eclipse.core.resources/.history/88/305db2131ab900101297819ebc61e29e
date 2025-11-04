@@ -1,0 +1,12 @@
+package com.example.board.like.repository;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.board.like.Like;
+
+import java.util.Optional;
+
+public interface LikeRepository extends JpaRepository<Like, Long> {
+	Optional<Like> findByPostIdAndUserId(Long postId, Long userId);
+}

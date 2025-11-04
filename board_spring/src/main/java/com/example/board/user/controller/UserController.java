@@ -1,8 +1,12 @@
 package com.example.board.user.controller;
 
+import com.example.board.config.JwtTokenProvider;
 import com.example.board.user.domain.User;
 import com.example.board.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +16,36 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+	private final UserService userService;
+	private final JwtTokenProvider jwtTokenProvider;
 
-    // 회원 가입
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        User savedUser = userService.registerUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-    }
+	// 회원 가입
+	@PostMapping("/register")
+	public ResponseEntity<User> register(@RequestBody User user) {
+		User savedUser = userService.registerUser(user);
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+	}
 
-    // 로그인
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        try {
-            userService.authenticate(user.getUsername(), user.getPassword());
-            return ResponseEntity.ok("로그인 성공");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        }
-    }
+	// 로그인
+	// UserController.java 내 login 메서드 수정 예
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody User user) {
+		try {
+			User authenticatedUser = userService.authenticate(user.getUsername(), user.getPassword());
+			String token = jwtTokenProvider.createToken(authenticatedUser.getUsername(), authenticatedUser.getId());
+			return ResponseEntity.ok(Map.of("token", token));
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+		}
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String token) {
+		// 토큰 없거나 잘못된 경우에도 200 응답
+		if (token != null && !token.isEmpty()) {
+			// 토큰 무효화 로직
+		}
+		return ResponseEntity.ok().build();
+	}
+
 }

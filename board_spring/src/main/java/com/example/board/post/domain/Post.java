@@ -5,9 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.board.user.domain.User;
 
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 @Entity
 @Getter
 @Setter
@@ -22,14 +21,18 @@ public class Post {
 	private Long id;
 
 	private String title;
-	
+
 	private String content;
-	
+
 	private LocalDateTime updatedAt;
-	
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User author;
+
 	@PreUpdate
 	public void onPreUpdate() {
-	    this.updatedAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
 	@Builder.Default

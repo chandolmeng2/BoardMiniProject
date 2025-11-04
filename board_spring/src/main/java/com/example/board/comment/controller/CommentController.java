@@ -1,23 +1,27 @@
 package com.example.board.comment.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.board.comment.domain.Comment;
 import com.example.board.comment.service.CommentService;
+import com.example.board.user.domain.User;
+import com.example.board.user.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/boards/{postId}/comments")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CommentController {
 
 	private final CommentService commentService;
-
-	public CommentController(CommentService commentService) {
-		this.commentService = commentService;
-	}
+	private final UserService userService;
 
 	@GetMapping
 	public List<Comment> getComments(@PathVariable("postId") Long postId) {
@@ -25,8 +29,10 @@ public class CommentController {
 	}
 
 	@PostMapping
-	public Comment createComment(@PathVariable("postId") Long postId, @RequestBody Comment comment) {
-		return commentService.createComment(postId, comment.getContent());
+	public Comment createComment(@PathVariable("postId") Long postId, @RequestBody Comment comment,
+			@AuthenticationPrincipal UserDetails userDetails) {
+		User user = userService.findByUsername(userDetails.getUsername());
+		return commentService.createComment(postId, comment.getContent(), user);
 	}
 
 	@DeleteMapping("/{commentId}")

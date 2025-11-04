@@ -1,28 +1,39 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ScrollToTop from "./components/ScrollTop";
-import MainLayout from "./components/MainLayout";
-import BoardList from "./components/BosrdList";
-import BoardDetail from "./components/BoardDetail";
-import BoardWrite from "./components/BoardWrite";
-import BoardEdit from "./components/BoardEdit";
-import LoginPage from "./components/LoginPage";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollTop";
+import MainLayout from "./components/common/MainLayout";
+import BoardList from "./components/boards/BosrdList";
+import BoardDetail from "./components/boards/BoardDetail";
+import BoardWrite from "./components/boards/BoardWrite";
+import BoardEdit from "./components/boards/BoardEdit";
+import LoginPage from "./components/auth/LoginPage";
+import RegisterPage from "./components/auth/RegisterPage";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
-    <MainLayout>
+    <AuthProvider>
       <Router>
-        <ScrollToTop>
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/boards" element={<BoardList />} />
-            <Route path="/boards/:id" element={<BoardDetail />} />
-            <Route path="/boards/new" element={<BoardWrite />} />
-            <Route path="/boards/:id/edit" element={<BoardEdit />} />
-          </Routes>
-        </ScrollToTop>
+        <MainLayout>
+          <ScrollToTop>
+            <Routes>
+              <Route path="/" element={<Navigate replace to="/login" />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/boards" element={<BoardList />} />
+              <Route path="/boards/:id" element={<BoardDetail />} />
+              <Route path="/boards/new" element={<BoardWrite />} />
+              <Route path="/boards/:id/edit" element={<BoardEdit />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Routes>
+          </ScrollToTop>
+        </MainLayout>
       </Router>
-    </MainLayout>
+    </AuthProvider>
   );
 }
 

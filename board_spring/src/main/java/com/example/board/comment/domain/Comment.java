@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 import com.example.board.post.domain.Post;
+import com.example.board.user.domain.User;
 
 @Entity
 @Getter
@@ -16,23 +17,27 @@ import com.example.board.post.domain.Post;
 @Builder
 public class Comment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;           // 어떤 게시글에 달린 댓글인지 연관관계
+	@ManyToOne
+	@JoinColumn(name = "user_id") // FK 생성
+	private User author;
 
-    private String content;
+	@ManyToOne
+	@JoinColumn(name = "post_id")
+	private Post post; // 어떤 게시글에 달린 댓글인지 연관관계
 
-    private LocalDateTime createdAt;
+	private String content;
 
-    private LocalDateTime updatedAt;    // 수정일, default null
+	private LocalDateTime createdAt;
 
-    @Builder.Default
-    private int likeCount = 0;          // 좋아요 수
+	private LocalDateTime updatedAt; // 수정일, default null
 
-    @Builder.Default
-    private int dislikeCount = 0;       // 싫어요 수
+	@Builder.Default
+	private int likeCount = 0; // 좋아요 수
+
+	@Builder.Default
+	private int dislikeCount = 0; // 싫어요 수
 }
